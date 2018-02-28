@@ -75,44 +75,104 @@
 # modules = dir(module)
 # print(modules)
 
-# 6.进入到Python标准库目录，检查每个.py文件看是否有__doc__字符串，如果有就对其整理归类。
+# 6. python采用wb方式写入
+# f = open("C:/tmp/tmp.txt","wb")
+# str ="小鲍"
+# print(type(str))
+# f.write(str.encode("utf8"))
+# f.close()
+
+# 7.进入到Python标准库目录，检查每个.py文件看是否有__doc__字符串，如果有就对其整理归类。
 # 第一步: 找出该目录下所有的文件
-import os
-str = "C:/Python33/Lib"
-num = []
-def find_file(dirname):
-    for i in os.listdir(dirname):
-        if os.path.isdir(dirname + "/" + i):
-            find_file(dirname+"/"+i)
-        else:
-            num.append(dirname+"/"+i)
-find_file(str)
-file_has_doc = open("hasdoc.txt","a+")
-file_has_not = open("nodoc.txt","a+")
+# 第二步: 采用wb的方式建立两个需要写入的文件
+# 第三步: 循环遍历每个文件，逻辑判断是否含有__doc__字符串的内容 有内容的加入到doc_lines中
+# 第四步: 如果doc_lines有内容，说明需要归类在A文件中，没有内容归类在B文件中
+# 难点:
+#   1) 如果不采用rb的方式打开，windows上的文件是gbk编码，但是在open指定采用gbk编码打开的时候，显示gbk不能识别其中的字符，很奇怪
+#   2) 采用rb方式打开，会以二进制方式打开，形成bytes字节流，注意在写入的时候，也需要将str encode成bytes保存
+# import os
+# import sys
+#
+# str = r"C:/Python33/Lib"
+#
+# num = []
+# def find_file(dirname):
+#     for i in os.listdir(dirname):
+#         if os.path.isdir(dirname + "/" + i):
+#             find_file(dirname+"/"+i)
+#         else:
+#             num.append(dirname+"/"+i)
+# find_file(str)
+# file_has_doc = open("hasdoc.txt","wb")
+# file_has_not = open("nodoc.txt","wb")
+#
+# doc_lines = b""
+# hasDoc = False
+#
+# for i in num:
+#     file = open(i,'rb')
+#     for line in file:
+#         #如果是刚开始且是以"""开头的 那么就是doc的文件
+#         if not hasDoc and line.startswith(b'"""'):
+#             hasDoc = True
+#         elif hasDoc and line.startswith(b'"""'):
+#             hasDoc = False
+#             doc_lines += line
+#             break
+#         if hasDoc:
+#             doc_lines = doc_lines + line
+#         else:
+#             break
+#
+#     if doc_lines != b"":
+#         file_has_doc.write("文件名是: \n".encode("utf8") + i.encode("utf8") + "\n".encode("utf8"))
+#     else:
+#         file_has_not.write("文件名是: \n".encode("utf8") + i.encode("utf8") + "\n".encode("utf8"))
+#     doc_lines = b""
+#     file.close()
+#
+# file_has_doc.close()
+# file_has_not.close()
 
-doc_lines =""
-hasDoc = False
-for i in num:
-    file = open(i)
-    for line in file:
-        #如果是刚开始且是以"""开头的 那么就是doc的文件
-        if not hasDoc and line.startswith('"""'):
-            hasDoc = True
-        elif hasDoc and line.startswith('"""'):
-            hasDoc = False
-            doc_lines +=line
-            break
-        if hasDoc:
-            doc_lines +=line
-        else:
-            break
-    if doc_lines !="":
-        file_has_doc.write("文件名: "+ i + "\n")
-        file.write("__doc__is: " + doc_lines + "\n")
-    else:
-        file_has_not.write("文件名" + i + "\n")
-    doc_lines = ""
-    file.close()
+# 8.复制文件,提示输入两个文件名，把第一个文件的内容复制到第二个文件中去
+# filename_a,filename_b = input("请输入两个文件名: ").split()
+# file_a =open(filename_a,"r")
+# file_b = open(filename_b,"w")
+# for f in file_a:
+#     file_b.write(f)
+# file_a.close()
+# file_b.close()
 
-file_has_doc.close()
-file_has_not.close()
+# 9.文本处理 人们输入的文字常常超过屏幕的最大宽度，编写一个程序，在一个文件中查找长度大于10个字符的文本行，从最接近80个字符的
+# 单词断行，把剩余行插入到下一行处。(需要用到临时的文件)
+# filename = input("请输入要处理的文件名称: ")
+# file = open(filename,"r")
+# tmp_file =open("tmp.txt","w")
+# for f in file:
+#     if len(f) > 10:
+#         list_f = list(f)
+#         count = len(list_f) / 10
+#         for i in range(0,int(count)):
+#             tmp_file.write("".join(list_f[:9]))
+#             tmp_file.write("\n")
+#             list_f = list_f[9:]
+#         tmp_file.write("".join(list_f[:9]))
+#     else:
+#         tmp_file.write(f)
+# file.close()
+
+# 10.搜索文件，输入一个字节值和一个文件名，显示该字符在文件中出现的次数
+filename, i = input("请输入要搜索的文件名称和要搜索的字节值: ").split()
+file = open(filename,"r")
+ch = chr(int(i))
+
+sum = 0
+for f in file:
+    sum += f.count(ch)
+
+print(sum)
+
+
+
+
+

@@ -1,7 +1,7 @@
 #-*- coding:utf-8 -*-
 
 import unittest
-from Unittest.bao_unittest import *
+from unittest.bao_unittest import *
 
 class TestBaoUnittest(unittest.TestCase):
     """
